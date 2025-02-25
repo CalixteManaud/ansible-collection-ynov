@@ -1,0 +1,7 @@
+---
+- name: Test Playbook
+  hosts: all
+  tasks:
+    - name: Afficher l'adresse IP
+      ansible.builtin.debug:
+        msg: "L'adresse IP de {{ inventory_hostname }} est {{ ansible_host }}"

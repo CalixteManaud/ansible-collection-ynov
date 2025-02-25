@@ -1,0 +1,8 @@
+---
+collections:
+  - ansible.posix
+  - community.general
+
+roles:
+  - name: geerlingguy.java
+    version: "2.3.3"

@@ -1,4 +1,4 @@
 ---
-mysql_db: "{{ hostvars['localhost']['mysql_db'] }}"
-mysql_user: "{{ hostvars['localhost']['mysql_user'] }}"
-mysql_password: "{{ hostvars['localhost']['mysql_password'] }}"
+mysql_db: wordpress_db
+mysql_user: wordpress_user
+mysql_password: Test1234

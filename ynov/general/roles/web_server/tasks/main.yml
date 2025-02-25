@@ -18,7 +18,7 @@
 
 - name: Create Apache virtual host configuration
   ansible.builtin.template:
-    src: vhost.conf.j2
+    src: apache.conf.j2
     dest: /etc/apache2/sites-available/wordpress.conf
   notify: Reload Apache
 

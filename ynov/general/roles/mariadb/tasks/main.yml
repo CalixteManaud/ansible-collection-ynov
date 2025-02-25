@@ -1,10 +1,11 @@
 ---
-- name: Install MariaDB
+- name: Install MariaDB and dependencies
   ansible.builtin.apt:
     name:
       - mariadb-server
       - python3-pymysql
     state: present
+    update_cache: yes
 
 - name: Ensure MariaDB is running and enabled
   ansible.builtin.service:
@@ -12,15 +13,34 @@
     state: started
     enabled: yes
 
+- name: Create admin user for MariaDB
+  community.mysql.mysql_user:
+    name: admin
+    password: "{{ mariadb_admin_password }}"
+    host: localhost
+    priv: '*.*:ALL,GRANT'
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
 - name: Create WordPress database
   community.mysql.mysql_db:
-    name: wordpress_db
+    name: "{{ mysql_db }}"
     state: present
+    login_user: admin
+    login_password: "{{ mariadb_admin_password }}"
 
 - name: Create WordPress database user
   community.mysql.mysql_user:
-    name: wordpress_user
-    password: "{{ mysql_wordpress_password }}"
-    priv: "wordpress_db.*:ALL"
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_password }}"
+    priv: "{{ mysql_db }}.*:ALL"
     host: localhost
     state: present
+    login_user: admin
+    login_password: "{{ mariadb_admin_password }}"
+
+- name: Flush privileges
+  community.mysql.mysql_query:
+    login_user: admin
+    login_password: "{{ mariadb_admin_password }}"
+    query: FLUSH PRIVILEGES

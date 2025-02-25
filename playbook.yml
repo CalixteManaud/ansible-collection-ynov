@@ -1,0 +1,24 @@
+---
+- name: Deploy WordPress
+  hosts: webservers
+  become: true
+  collections:
+    - ynov.general
+  vars_files:
+    - ynov/general/roles/wordpress/default/main.yml
+
+  roles:
+    - ynov.general.post_installation
+    - ynov.general.web_server
+    - ynov.general.mariadb
+    - ynov.general.wordpress
+
+  post_tasks:
+    - name: Check if WordPress is accessible
+      uri:
+        url: "http://{{ ansible_host }}"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 5
+      delay: 10

@@ -16,7 +16,7 @@
     state: present
 
 - name: Enable ufw
-  ansible.posix.ufw:
+  ufw:
     state: enabled
     rule: allow
     port: "{{ item }}"
