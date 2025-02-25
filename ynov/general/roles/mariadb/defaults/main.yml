@@ -1,0 +1,5 @@
+---
+# defaults file for mariadb
+mysql_db: wordpress_db
+mysql_user: wordpress_user
+mysql_password: Test1234

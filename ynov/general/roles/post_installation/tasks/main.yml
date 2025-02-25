@@ -1,0 +1,37 @@
+---
+# tasks file for post_installation
+- name: Update and upgrade apt packages
+  ansible.builtin.apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install packages
+  ansible.builtin.apt:
+    name:
+      - curl
+      - vim
+      - htop
+      - ufw
+    state: present
+
+- name: Enable ufw
+  ansible.posix.ufw:
+    state: enabled
+    rule: allow
+    port: "{{ item }}"
+  loop: 
+    - 22
+    - 80
+    - 443
+
+- name: Create a new user
+  ansible.builtin.user:
+    name: webadmin
+    groups: sudo
+    shell: /bin/bash
+
+- name: Set up authorized keys for the new user
+  ansible.posix.authorized_key:
+    user: webadmin
+    key: "{{ lookup('file', '~/.ssh/formation.pub') }}"

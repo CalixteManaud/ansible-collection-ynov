@@ -1,0 +1,4 @@
+---
+mysql_db: "{{ hostvars['localhost']['mysql_db'] }}"
+mysql_user: "{{ hostvars['localhost']['mysql_user'] }}"
+mysql_password: "{{ hostvars['localhost']['mysql_password'] }}"

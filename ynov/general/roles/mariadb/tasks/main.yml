@@ -1,0 +1,26 @@
+---
+- name: Install MariaDB
+  ansible.builtin.apt:
+    name:
+      - mariadb-server
+      - python3-pymysql
+    state: present
+
+- name: Ensure MariaDB is running and enabled
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Create WordPress database
+  community.mysql.mysql_db:
+    name: wordpress_db
+    state: present
+
+- name: Create WordPress database user
+  community.mysql.mysql_user:
+    name: wordpress_user
+    password: "{{ mysql_wordpress_password }}"
+    priv: "wordpress_db.*:ALL"
+    host: localhost
+    state: present
