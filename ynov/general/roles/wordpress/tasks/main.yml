@@ -7,31 +7,47 @@
 - name: Extract WordPress
   ansible.builtin.unarchive:
     src: /tmp/wordpress.tar.gz
-    dest: /var/www/
+    dest: /var/www/html/
     remote_src: yes
+    creates: /var/www/html/wp-config.php # Check for wp-config.php to check for finished extraction
 
 - name: Set correct permissions for WordPress files
   ansible.builtin.file:
-    path: /var/www/wordpress
+    path: /var/www/html
     owner: www-data
     group: www-data
     recurse: yes
 
+- name: Generate WordPress salts
+  ansible.builtin.uri:
+    url: https://api.wordpress.org/secret-key/1.1/salt/
+    return_content: yes
+  register: wp_salt
+
 - name: Copy WordPress config file
   ansible.builtin.template:
     src: wp-config.php.j2
-    dest: /var/www/wordpress/wp-config.php
+    dest: /var/www/html/wp-config.php
     owner: www-data
     group: www-data
 
-- name: Ensure WordPress directory exists
-  ansible.builtin.file:
-    path: /var/www/wordpress
-    state: directory
+- name: Ensure .htaccess file exists
+  ansible.builtin.template:
+    src: htaccess.j2
+    dest: /var/www/html/.htaccess
     owner: www-data
     group: www-data
 
-- name: Generate WordPress salts
-  ansible.builtin.command: curl https://api.wordpress.org/secret-key/1.1/salt/
-  register: wp_salt
-  changed_when: false
+- name: Enable rewrite module
+  community.general.apache2_module:
+    name: rewrite
+    state: present
+  notify: Restart Apache
+
+- name: Disable default Apache site
+  command: a2dissite 000-default.conf
+  notify: Restart Apache
+
+- name: Enable WordPress site
+  command: a2ensite "{{ wordpress_site_name }}"
+  notify: Restart Apache

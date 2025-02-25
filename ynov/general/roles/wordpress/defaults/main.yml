@@ -2,3 +2,4 @@
 mysql_db: wordpress_db
 mysql_user: wordpress_user
 mysql_password: Test1234
+wordpress_site_name: "000-default.conf"
