@@ -1,5 +1,5 @@
 ---
-- name: Reload apache
+- name: Reload Apache
   service:
     name: apache2
     state: restarted
