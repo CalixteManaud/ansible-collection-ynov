@@ -5,9 +5,13 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: geerlingguy/docker-ubuntu2004-ansible
+    image: docker.io/debian:stable
     pre_build_image: true
     privileged: true
+    command: /sbin/init
+    tmpfs:
+      "/tmp": "exec"
+      "/run": "rw,noexec,nosuid,nodev"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     capabilities:

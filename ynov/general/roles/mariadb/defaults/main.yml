@@ -5,3 +5,5 @@ mysql_user: wordpress_user
 mysql_password: Test1234
 mariadb_admin_password: Test1234
 wordpress_site_name: "000-default.conf"
+opencast_mariadb_max_connections: 512
+opencast_mariadb_innodb_buffer_pool_size: "{{ ((ansible_memtotal_mb / 1024) * 0.8) | int }}G"
