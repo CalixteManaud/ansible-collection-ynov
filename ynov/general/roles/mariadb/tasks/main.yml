@@ -15,37 +15,22 @@
     owner: mysql
     group: mysql
 
-- name: Check MariaDB service name
-  ansible.builtin.command: systemctl list-unit-files | grep mariadb
-  register: mariadb_service_check
-  changed_when: false
-
-- name: Start MySQL service
-  ansible.builtin.command: service mysql start
-  changed_when: false
-
-- name: Start MariaDB service
-  ansible.builtin.command: mysqld
-  async: 45
-  poll: 0
-
-- name: Check MariaDB service status
-  ansible.builtin.command: systemctl is-active mariadb
-  register: mariadb_status
+- name: Check if MariaDB is running
+  ansible.builtin.command: pgrep mysqld
+  register: mariadb_process
   changed_when: false
   failed_when: false
 
-- name: Ensure MariaDB is running and enabled
-  ansible.builtin.service:
-    name: mariadb
-    state: started
-    enabled: yes
-  when: mariadb_status.rc == 0
+- name: Start MariaDB service
+  ansible.builtin.command: mysqld_safe &
+  async: 45
+  poll: 0
+  changed_when: false
+  when: mariadb_process.rc != 0
 
 - name: Wait for MariaDB to be ready
   ansible.builtin.wait_for:
-    path: /var/run/mysqld/mysqld.sock
-    state: present
+    port: 3306
     timeout: 30
 
 - name: Create admin user for MariaDB

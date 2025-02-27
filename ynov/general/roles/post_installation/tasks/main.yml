@@ -16,8 +16,12 @@
     state: present
 
 - name: Enable ufw
-  ufw:
+  community.general.ufw:
     state: enabled
+  become: true
+
+- name: Add UFW rules
+  community.general.ufw:
     rule: allow
     port: "{{ item }}"
   loop: 

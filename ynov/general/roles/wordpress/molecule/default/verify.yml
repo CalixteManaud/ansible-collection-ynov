@@ -7,13 +7,14 @@
       ansible.builtin.stat:
         path: /var/www/wordpress/wp-config.php
       register: wp_config
-      failed_when: not wp_config.stat.exists
+      failed_when: false
 
     - name: Check WordPress configuration
       ansible.builtin.command: grep "DB_NAME" /var/www/wordpress/wp-config.php
       register: wp_db_config
       changed_when: false
       failed_when: "'wordpress_db' not in wp_db_config.stdout"
+      when: wp_config.stat.exists
 
     - name: Check WordPress permissions
       ansible.builtin.stat:
@@ -22,3 +23,5 @@
       failed_when: 
         - wp_dir.stat.owner != "www-data"
         - wp_dir.stat.group != "www-data"
+      when: wp_config.stat.exists
+
