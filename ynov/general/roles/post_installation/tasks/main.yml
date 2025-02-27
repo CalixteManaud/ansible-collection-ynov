@@ -24,12 +24,14 @@
     - 22
     - 80
     - 443
+  become: true
 
 - name: Create a new user
   ansible.builtin.user:
     name: webadmin
     groups: sudo
     shell: /bin/bash
+  become: true
 
 - name: Set up authorized keys for the new user
   ansible.posix.authorized_key:

@@ -11,3 +11,5 @@ provisioner:
   name: ansible
 verifier:
   name: ansible
+  options:
+    p: "no:pytest-ansible"

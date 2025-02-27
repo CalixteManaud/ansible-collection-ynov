@@ -1,5 +1,3 @@
-import pytest
-
 def test_apache_installed(host):
     assert host.package("apache2").is_installed
 

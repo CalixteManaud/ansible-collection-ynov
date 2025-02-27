@@ -4,4 +4,4 @@
   tasks:
     - name: Include post_installation role
       ansible.builtin.include_role:
-        name: post_installation
+        name: ../../../post_installation

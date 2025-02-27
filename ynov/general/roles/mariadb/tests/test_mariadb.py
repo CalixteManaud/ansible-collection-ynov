@@ -1,5 +1,3 @@
-import pytest
-
 def test_mariadb_installed(host):
     assert host.package("mariadb-server").is_installed
 

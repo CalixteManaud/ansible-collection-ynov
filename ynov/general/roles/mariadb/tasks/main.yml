@@ -7,11 +7,46 @@
     state: present
     update_cache: yes
 
+- name: Ensure MySQL socket directory exists
+  ansible.builtin.file:
+    path: /var/run/mysqld
+    state: directory
+    mode: '0755'
+    owner: mysql
+    group: mysql
+
+- name: Check MariaDB service name
+  ansible.builtin.command: systemctl list-unit-files | grep mariadb
+  register: mariadb_service_check
+  changed_when: false
+
+- name: Start MySQL service
+  ansible.builtin.command: service mysql start
+  changed_when: false
+
+- name: Start MariaDB service
+  ansible.builtin.command: mysqld
+  async: 45
+  poll: 0
+
+- name: Check MariaDB service status
+  ansible.builtin.command: systemctl is-active mariadb
+  register: mariadb_status
+  changed_when: false
+  failed_when: false
+
 - name: Ensure MariaDB is running and enabled
   ansible.builtin.service:
     name: mariadb
     state: started
     enabled: yes
+  when: mariadb_status.rc == 0
+
+- name: Wait for MariaDB to be ready
+  ansible.builtin.wait_for:
+    path: /var/run/mysqld/mysqld.sock
+    state: present
+    timeout: 30
 
 - name: Create admin user for MariaDB
   community.mysql.mysql_user:
@@ -38,6 +73,13 @@
     state: present
     login_user: admin
     login_password: "{{ mariadb_admin_password }}"
+
+- name: Check MySQL user permissions
+  community.mysql.mysql_query:
+    login_user: admin
+    login_password: "{{ mariadb_admin_password }}"
+    query: "SHOW GRANTS FOR '{{ mysql_user }}'@'localhost'"
+  register: user_permissions
 
 - name: Flush privileges
   community.mysql.mysql_query:

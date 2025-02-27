@@ -1,5 +1,3 @@
-import pytest
-
 def test_wordpress_files(host):
     assert host.file("/var/www/wordpress").is_directory
     assert host.file("/var/www/wordpress/wp-config.php").exists

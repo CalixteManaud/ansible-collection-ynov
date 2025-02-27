@@ -4,4 +4,4 @@
   tasks:
     - name: Include mariadb role
       ansible.builtin.include_role:
-        name: mariadb
+        name: ../../../mariadb

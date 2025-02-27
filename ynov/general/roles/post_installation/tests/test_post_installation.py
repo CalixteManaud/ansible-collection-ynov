@@ -1,5 +1,3 @@
-import pytest
-
 def test_essential_packages(host):
     packages = ["curl", "vim", "htop", "ufw"]
     for package in packages:
