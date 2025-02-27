@@ -7,6 +7,7 @@
       - libapache2-mod-php
       - php-mysql
     state: present
+    update_cache: yes
 
 - name: Enable Apache modules
   ansible.builtin.apache2_module:
@@ -29,8 +30,16 @@
     state: link
   notify: Reload Apache
 
-- name: Ensure Apache is running and enabled
-  ansible.builtin.service:
-    name: apache2
-    state: started
-    enabled: yes
+- name: Check if Apache is running
+  ansible.builtin.command: pgrep apache2
+  register: apache_status
+  changed_when: false
+  failed_when: false
+
+- name: Start Apache if not running
+  ansible.builtin.command: apache2ctl start
+  when: apache_status.rc != 0
+
+- name: Ensure Apache is running
+  ansible.builtin.command: apache2ctl -k start
+  changed_when: false

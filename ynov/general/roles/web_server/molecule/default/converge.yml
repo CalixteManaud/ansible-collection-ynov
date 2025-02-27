@@ -4,4 +4,4 @@
   tasks:
     - name: Include web_server role
       ansible.builtin.include_role:
-        name: web_server
+        name: ../../../web_server

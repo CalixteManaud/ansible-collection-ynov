@@ -4,4 +4,4 @@
   tasks:
     - name: Include wordpress role
       ansible.builtin.include_role:
-        name: wordpress
+        name: ../../../wordpress
