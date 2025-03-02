@@ -5,13 +5,9 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: docker.io/debian:stable
+    image: debian:latest
     pre_build_image: true
     privileged: true
-    command: /sbin/init
-    tmpfs:
-      "/tmp": "exec"
-      "/run": "rw,noexec,nosuid,nodev"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     capabilities:

@@ -5,7 +5,7 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: geerlingguy/docker-ubuntu2004-ansible
+    image: debian:latest
     pre_build_image: true
     privileged: true
     volumes:
@@ -16,6 +16,7 @@ platforms:
 provisioner:
   name: ansible
 verifier:
-  name: ansible
+  name: testinfra
   options:
     p: "no:pytest-ansible"
+    verbose: true
